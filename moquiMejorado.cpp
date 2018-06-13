@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iomanip>
 using namespace std;
 /* Definiendo la estructura etiqueta de nodo. Sus campos incluyen
  * el n'umero de nodo, el coste total del nodo, y su precedente. */
@@ -33,6 +34,8 @@ int pop( node_t ** );			/* retira el primer nodo de la cola */
 void printQueue( node_t * );	/* imprimir los valores almacenados en la cola */
 void llenarMatriz(int **m, int cant);
 void leer (int &n);
+void mostrarMatriz(int **m, int cant);
+void warshall (int **m, int num);
 /* Funci'on que calcula la distancia m'inima de cualquiera de los 
  * nodos al primero */
 void dijkstra( int, int **, int, int );
@@ -46,7 +49,7 @@ int main () {
 	int numNodos;
 	leer(numNodos);
 	//int numNodos = 8;
-	/* Definiendo la matriz de adyacencia */
+	/* Definiendo la matriz de distancia */
 	int **A;
 	if ( ( A = (int **) malloc( numNodos * sizeof(int *) ) ) == NULL ) return 1;
 	for ( i = 0; i < numNodos; i++ )
@@ -95,15 +98,15 @@ int main () {
 	A[7][5] = 16;
 	A[7][6] = 7;
  */
-	/* Imprimir la matriz de adyacencia */
-	printf( "Matriz de adyacencia:\n\n" );
-	for ( i = 0; i < numNodos; i++ ) {
-		for ( j = 0; j < numNodos; j++ )
-			printf( "%2d  ", A[i][j] );
-		printf( "\n" );
-	}
-	printf( "\n" );
- 
+	/* Imprimir la matriz de distancia */
+	cout<< "Matriz de distancia:\n\n";
+	mostrarMatriz(A,numNodos);
+	cout<<endl;
+ 	
+ 	cout<<"Pasamos la matriz por el algoritmo de warshall"<<endl;
+
+ 	warshall(A,numNodos);
+ 	mostrarMatriz(A,numNodos);
 	/* calcular dijkstra a partir del nodo 0, a partir del nofo 7 */
 	dijkstra( numNodos, A, 0, numNodos-1 );
  
@@ -116,7 +119,7 @@ int main () {
 }
 /* Calcula el coste m'inimo de alcanzar un nodo final 'b'
  * grafo no dirigido con N nodos, a partir del nodo inicial 'a',
- * dada su matriz de adyacencia A */
+ * dada su matriz de distancia A */
 void dijkstra( int N, int **A, int a, int b ) {
  
 	label_t *Labels;
@@ -334,6 +337,13 @@ void llenarMatriz(int **m, int cant) {
 	}
 }
 
+void mostrarMatriz(int **m, int cant){
+		for (int i=0; i<cant;i++){
+			for(int j=0;j<cant;j++)
+				cout << setw(2) << m[i][j] << "  ";
+		cout<<endl;
+		}
+}
 void leer (int &n){
 	cin >>n;
 	while (cin.fail()){
@@ -342,5 +352,17 @@ void leer (int &n){
 		cout<<"Debe de ingresar un numero entero"<<endl;
 		cout<<"por favor escriba el dato otra vez: ";
 		cin>>n;
+	}
+}
+
+void warshall (int **m, int num){
+	for (int k = 0; k<num;k++){
+		for (int i = 0; i<num;i++){
+			for (int j = 0; j<num;j++){
+				if(m[i][j]>m[i][k]+m[k][j]){
+					m[i][j]=m[i][k]+m[k][j];
+				} 
+			}
+		}	
 	}
 }
