@@ -32,10 +32,10 @@ int insert( node_t **, int, label_t * );	/* agrega un nodo ordenadamente a la co
 void quit( node_t **, int );	/* retira un nodo espec'ifico de la cola */
 int pop( node_t ** );			/* retira el primer nodo de la cola */
 void printQueue( node_t * );	/* imprimir los valores almacenados en la cola */
-void llenarMatriz(int **m, int cant);
-void leer (int &n);
-void mostrarMatriz(int **m, int cant);
-void warshall (int **m, int num);
+void llenarMatriz(int **m, int cant); //llena la matriz
+void leer (int &n); //lee un numero entero, pide otra vez si el dato no es valido
+void mostrarMatriz(int **m, int cant); // muestra la matriz
+void warshall (int **m, int num); 
 /* Funci'on que calcula la distancia m'inima de cualquiera de los 
  * nodos al primero */
 void dijkstra( int, int **, int, int );
@@ -47,6 +47,7 @@ int main () {
 	/* cantidad total de nodos */
 	cout<<"ingrese la cantidad de nodos: ";
 	int numNodos;
+	int primerNodo, ultimoNodo;
 	leer(numNodos);
 	//int numNodos = 8;
 	/* Definiendo la matriz de distancia */
@@ -58,58 +59,49 @@ int main () {
 	for ( i = 0; i < numNodos; i++ )
 		for ( j = 0; j < numNodos; j++ )
 			A[i][j] = 0;
+	cout<<endl;
  	llenarMatriz(A,numNodos);
-	/* por simplicidad, completamos solo los pares de nodos conectados */
-/*	A[0][1] = 16;
-	A[0][2] = 10;
-	A[0][3] = 5;
- 
-	A[1][0] = 16;
-	A[1][2] = 2;
-	A[1][5] = 4;
-	A[1][6] = 6;
- 
-	A[2][0] = 10;
-	A[2][1] = 2;
-	A[2][3] = 4;
-	A[2][4] = 10;
-	A[2][5] = 12;
- 
-	A[3][0] = 5;
-	A[3][2] = 4;
-	A[3][4] = 15;
- 
-	A[4][2] = 10;
-	A[4][3] = 15;
-	A[4][5] = 3;
-	A[4][7] = 5;
- 
-	A[5][1] = 4;
-	A[5][2] = 12;
-	A[5][4] = 3;
-	A[5][6] = 8;
-	A[5][7] = 16;
- 
-	A[6][1] = 6;
-	A[6][5] = 8;
-	A[6][7] = 7;
- 
-	A[7][4] = 5;
-	A[7][5] = 16;
-	A[7][6] = 7;
- */
+ 	cout<<endl;
 	/* Imprimir la matriz de distancia */
 	cout<< "Matriz de distancia:\n\n";
 	mostrarMatriz(A,numNodos);
 	cout<<endl;
  	
  	cout<<"Pasamos la matriz por el algoritmo de warshall"<<endl;
-
  	warshall(A,numNodos);
  	mostrarMatriz(A,numNodos);
-	/* calcular dijkstra a partir del nodo 0, a partir del nofo 7 */
-	dijkstra( numNodos, A, 0, numNodos-1 );
- 
+ 	cout<<endl<<endl;
+ 	
+ 	bool exito = false;
+ 	cout<<"Ingrese el nodo inicial: ";
+ 	do{
+ 		exito = false;
+ 		leer(primerNodo);
+ 		if (primerNodo<0 || primerNodo>=numNodos){
+ 			cout<<"El nodo no existe"<<endl;
+ 			cout<<"Ingrese nuevamente el nodo inicial: ";
+ 		} else {
+ 			exito=true;
+		 }
+	 }while(!exito);
+ 	cout<<endl<<"Ingrese el nodo final: ";
+ 	do{
+ 		exito = false;
+ 		leer(ultimoNodo);
+ 		if (ultimoNodo<0 || ultimoNodo>=numNodos){
+ 			cout<<"El nodo no existe"<<endl;
+ 			cout<<"Ingrese nuevamente el nodo final: ";
+ 		} else if(ultimoNodo == primerNodo) {
+ 			cout<<"El nodo no puede ser igual al inicial"<<endl;
+ 			cout<<"Ingrese nuevamente el nodo final: ";
+ 		} else{
+ 			exito=true;
+		 }
+	 }while(!exito);
+	 cout<<endl;
+	 
+	//dijkstra
+	dijkstra( numNodos, A, primerNodo, ultimoNodo);
 	/* liberar memoria */
 	for ( i = 0; i < numNodos; i++ )
 		free( A[i] );
@@ -200,8 +192,8 @@ void dijkstra( int N, int **A, int a, int b ) {
 		printQueue( Cola );
  
 		/* pausa (opcional) */
-		printf( "\npresione ENTER para continuar ..." );
-		getchar();
+		//printf( "\npresione ENTER para continuar ..." );
+		//getchar();
 	}
 	printf( "Ya no quedan nodos por analizar.\n" );	/* mensaje final */
  
@@ -359,7 +351,7 @@ void warshall (int **m, int num){
 	for (int k = 0; k<num;k++){
 		for (int i = 0; i<num;i++){
 			for (int j = 0; j<num;j++){
-				if(m[i][j]>m[i][k]+m[k][j]){
+				if(m[i][j]>m[i][k]+m[k][j]&&m[i][k]!=0&&m[k][j]!=0){
 					m[i][j]=m[i][k]+m[k][j];
 				} 
 			}
