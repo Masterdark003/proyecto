@@ -2,10 +2,10 @@
  * camino más corto o económico entre dos puntos de un grafo
  * no dirigido.
  */
- 
+#include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
- 
+using namespace std;
 /* Definiendo la estructura etiqueta de nodo. Sus campos incluyen
  * el n'umero de nodo, el coste total del nodo, y su precedente. */
 struct label {
@@ -31,7 +31,8 @@ int insert( node_t **, int, label_t * );	/* agrega un nodo ordenadamente a la co
 void quit( node_t **, int );	/* retira un nodo espec'ifico de la cola */
 int pop( node_t ** );			/* retira el primer nodo de la cola */
 void printQueue( node_t * );	/* imprimir los valores almacenados en la cola */
- 
+void llenarMatriz(int **m, int cant);
+void leer (int &n);
 /* Funci'on que calcula la distancia m'inima de cualquiera de los 
  * nodos al primero */
 void dijkstra( int, int **, int, int );
@@ -41,20 +42,22 @@ int main () {
 	int i, j;
  
 	/* cantidad total de nodos */
-	int numNodos = 8;
- 
+	cout<<"ingrese la cantidad de nodos: ";
+	int numNodos;
+	leer(numNodos);
+	//int numNodos = 8;
 	/* Definiendo la matriz de adyacencia */
 	int **A;
 	if ( ( A = (int **) malloc( numNodos * sizeof(int *) ) ) == NULL ) return 1;
 	for ( i = 0; i < numNodos; i++ )
 		if ( ( A[i] = (int *) malloc( numNodos * sizeof(int) ) ) == NULL ) return 1;
  
-	for ( i = 0; i < 8; i++ )
-		for ( j = 0; j < 8; j++ )
+	for ( i = 0; i < numNodos; i++ )
+		for ( j = 0; j < numNodos; j++ )
 			A[i][j] = 0;
- 
+ 	llenarMatriz(A,numNodos);
 	/* por simplicidad, completamos solo los pares de nodos conectados */
-	A[0][1] = 16;
+/*	A[0][1] = 16;
 	A[0][2] = 10;
 	A[0][3] = 5;
  
@@ -91,18 +94,18 @@ int main () {
 	A[7][4] = 5;
 	A[7][5] = 16;
 	A[7][6] = 7;
- 
+ */
 	/* Imprimir la matriz de adyacencia */
 	printf( "Matriz de adyacencia:\n\n" );
-	for ( i = 0; i < 8; i++ ) {
-		for ( j = 0; j < 8; j++ )
+	for ( i = 0; i < numNodos; i++ ) {
+		for ( j = 0; j < numNodos; j++ )
 			printf( "%2d  ", A[i][j] );
 		printf( "\n" );
 	}
 	printf( "\n" );
  
 	/* calcular dijkstra a partir del nodo 0, a partir del nofo 7 */
-	dijkstra( numNodos, A, 0, 7 );
+	dijkstra( numNodos, A, 0, numNodos-1 );
  
 	/* liberar memoria */
 	for ( i = 0; i < numNodos; i++ )
@@ -317,4 +320,27 @@ void printQueue( node_t *queue ) {
 		currPtr = currPtr->nextPtr;
 	} 
 	printf( "\n" );
+}
+
+void llenarMatriz(int **m, int cant) {
+	int valor;
+	cout<<"Ingrese los datos "<<endl;
+	for (int i=0; i<cant;i++){
+		for(int j=0;j<cant;j++){
+			cout<<"m["<<i<<"]["<<j<<"] = ";	
+			leer(m[i][j]);
+		}
+		cout<<endl;
+	}
+}
+
+void leer (int &n){
+	cin >>n;
+	while (cin.fail()){
+		cin.clear();//limpia el buffer, reinicia cin.fail()
+		cin.ignore(256, '\n');//misma funcion que el gets(temp)
+		cout<<"Debe de ingresar un numero entero"<<endl;
+		cout<<"por favor escriba el dato otra vez: ";
+		cin>>n;
+	}
 }
